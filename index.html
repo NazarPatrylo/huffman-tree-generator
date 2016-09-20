@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="htmlhook.ru">
+    <meta name="publisher" content="Viktor Klim">
+    <meta name="description" content="Создать стопроцентный шаблон HTML5">
+    <meta name="keywords" content="100%, шаблон, HTML5">
+    <meta name="generator" content="Core CMS">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+ 
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+ 
+ <!--[if lt IE 9]>
+     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+ <![endif]-->
+<title>Huffman Code</title>
+</head>
+<body>
+ 
+<header>
+
+       <h1>Huffman Tree Generator</h1>
+</header>
+    <main>
+       <article>
+          <div>
+              <textarea id="text" rows="6" cols="100"></textarea>
+              <button id='send' type='button'>compute</button>
+          </div>
+          <div id="wordtree_explicit" style="width: 10000px; height: 100%;"></div>
+          <div>
+             <br>
+             <p> H = <span class="h" ></span></p>
+             <p> L = <span class="l" ></span></p>
+          </div>
+          <div class="table"></div>
+         </article>
+    </main>
+<footer>
+     <p>
+        <small>
+          <time>NazarPatrylo</time> © <a href="http://you-web.xyz">you-web.xyz</a>
+       </small>
+    </p>
+</footer>
+    
+</body>
+</html>
+
+
+
+
+
+
+<script>
+    $(document).ready(function(){
+        google.charts.load('current', {packages:['wordtree']});
+        $('#send').click(function(){
+            var text = $('#text').val();
+            //alert(text);
+                $('.h').text('');   
+                $('.l').text('');     
+                $('.table table').remove();    
+                $('#wordtree_explicit div').remove();    
+                get_tree(text);
+            
+        });
+        
+        function get_tree(text){
+            $.ajax({
+            type:"POST",
+            url:"/huff.php",
+            data: {
+                text: text
+            },  
+            dataType:"json",
+                success: function(data1){  
+                    //alert(data);
+
+                    
+                    google.charts.setOnLoadCallback(drawSimpleNodeChart);
+                    function drawSimpleNodeChart() {
+                      var nodeListData = new google.visualization.arrayToDataTable([
+                        ['id', 'childLabel', 'parent', 'size', { role: 'style' }],
+                        [0, '1', -1, 2, 'black'],
+                        [1, '2', -1, 2, 'black'],
+                        [2, '12', 0, 1, 'black']
+                        ]);
+
+                     var data = new google.visualization.DataTable();  
+
+                     data.addColumn('number', 'id');
+                     data.addColumn('string', 'childLabel');
+                     data.addColumn('number', 'parent');
+                     data.addColumn('number', 'size');
+                     data.addColumn('string', { role: 'style' });
+
+
+                    for(var index in data1[0]) { 
+                        console.log(); 
+                        var weight = '';
+                        if(data1[0][index]['weight']!=null){
+                            weight = '('+data1[0][index]['weight']+')' + data1[0][index]['name'].toString();
+                        }else{
+                            weight = data1[0][index]['name'].toString();
+                        }
+                        data.addRow([Number(data1[0][index]['index']), weight, Number(data1[0][index]['parent']),2, 'black']);
+                    }
+
+                      var options = {
+                        colors: ['black', 'black', 'black'],
+                         maxFontSize: 10,
+                        wordtree: {
+                          format: 'explicit',
+                          type: 'suffix'
+                        }
+                      };
+
+                      var wordtree = new google.visualization.WordTree(document.getElementById('wordtree_explicit'));
+                      wordtree.draw(data, options);
+                    }
+                    
+                
+
+
+                $('.h').text(data1[1]);   
+                $('.l').text(data1[2]);    
+                $('.table').html(data1[3]);
+
+            },
+                error: function(){
+                    alert('error');
+                }
+            });
+        }
+        
+    });
+    
+</script>
