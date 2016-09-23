@@ -19,14 +19,7 @@ class Huffman{
             $this->setCountLetter((string)$this->text[$i]);
             
         }
-//        print'<pre>';
-//        print_r($this->countLatter);
-//        print'</pre>';
         $this->buildTree($this->countLatter);
-//        print'<pre>';
-//        print_r($this->codLatter);
-//        print'</pre>';
-        
     }
     
     private function setCountLetter($latter){
@@ -46,24 +39,16 @@ class Huffman{
         $tree = array();
         $parentIndex = 0;
         
-//        
-//        for($i=0; $i<count($this->countLatter);$i++){
-//            $tree [$i] = array('name' => $this->countLatter[$i], 'parent'=>'-1');
-//        }
-        
         foreach ($this->countLatter as $key=>$val){
             array_push($tree,array('name'=>$key,'parent'=>'-1'));
         }
-        
-                
+             
         do{
             $min1 = $this->searchMin($countLatter);
             $min1Val = $countLatter[$min1];
-            //  unset($this->countLatter[$min1]);
             unset($countLatter[$min1]);
             $min2 = $this->searchMin($countLatter);
             $min2Val = $countLatter[$min2];
-            // unset($this->countLatter[$min2]);
             unset($countLatter[$min2]);
             $countLatter[$min1.$min2] = $min1Val+$min2Val;
             
@@ -103,22 +88,6 @@ class Huffman{
              $h += (((100/$this->weight_oll)*$v)/100)*(log(1/(100/$this->weight_oll/100)));
          }
          
-//         echo '<br>';
-//         echo 'L='.$l;
-//         echo '<br>';
-//         echo 'H='.$h;
-//         echo '<br>';
-//         
-//        
-//        print'<pre>';
-//        print_r($countLatter);
-//        print'</pre>';
-//        
-//        print'<pre>';
-//        print_r($tree);
-//        print'</pre>';
-        //echo json_encode($tree);
-        
         $treeNew = array();
         foreach ($tree as $k=>$v){
             if($v['parent']==-1){
@@ -128,14 +97,7 @@ class Huffman{
             }
         }
         
-//        print'<pre>';
-//        print_r($treeNew);
-//        print'</pre>';
-         
-         
-   
-       
-         $rating = $treeNew;
+        $rating = $treeNew;
 
         $by = 'parent';
         usort($rating, function($first, $second) use( $by  ) {
@@ -143,9 +105,6 @@ class Huffman{
             elseif ($first[$by]<$second[$by]) { return -1; }
             return 0;
         });
-        
-      
-        
         
         for($i=0;$i<count($rating);$i+=2){
             if(isset($rating[$i+1])&&isset($rating[$i+2])){
@@ -158,26 +117,16 @@ class Huffman{
             }
             
         }
-        
-        
-        
-        
-//print'<pre>';
-//print_r($rating);
-//print'</pre>';      
 
         $table='<table><tr><td>symbol</td><td>the number of occurrences</td><td>coding</td></tr>';
         foreach ($this->countLatter as $k=>$v){
             $table.='<tr><td>'.$k.'</td><td>'.$v.'</td><td>'.$this->codLatter[$k].'</td></tr>';
         }
         $table.='</table>';
-
-      echo json_encode(array($rating,$h,$l,$table));   
-         
+    echo json_encode(array($rating,$h,$l,$table));   
   }
     
     private function searchTreeNew($tree, $treeNew, $indexSymbolOld, $indexSymbolNew){
-        
         for($i=0;$i<count($tree);$i++){
             if($tree[$i]['parent']==$indexSymbolOld){
                array_push($treeNew,array('name'=>$tree[$i]['name'],'parent'=>$indexSymbolNew,'weight'=>$tree[$i]['weight'])); 
@@ -188,7 +137,6 @@ class Huffman{
         }
         return $treeNew;  
     }
-
 
     private function searchMin($countLatter){
         $min='';
@@ -205,7 +153,6 @@ class Huffman{
     }
     
     private function searchSymbolOnTree($tree,$symbol){
-
         $index = 0;
         if(count($tree)>0){
             for($i=0; $i<count($tree);$i++){

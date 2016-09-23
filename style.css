@@ -10,6 +10,7 @@ body {
     margin:0;
 }
 header {
+    text-align: center;
     background-color: #373737;
     color: #fff;
     height: 105px;
@@ -35,11 +36,12 @@ main {
     display: block;
 }
 article {
+    
     float: left;
     margin-bottom: 30px;
     padding: 0 15px;
-    width: 74%;
-    overflow: hidden;
+    width: 100%;
+    overflow: scroll;
 }
 section {
     background-color:#eee;
@@ -50,8 +52,12 @@ section {
     background-color:#eee;
     border: 1px solid #ccc;
     padding: 20px;
+}
+textarea{
+    width: 100%;
 }
 footer {
+    text-align: center;
     background-color: #373737;
     clear: both;
     color: #fff;
